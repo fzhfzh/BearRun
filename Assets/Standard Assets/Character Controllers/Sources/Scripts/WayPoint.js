@@ -21,7 +21,7 @@ function GetNextWayPoint():WayPoint
 
 	//choose a random next waypoint to traverse to
 	var choice:int = Random.Range(0, size - 1);
-	
+	//Debug.Log(choice);
 	
 	return connectedWayPoints[choice];
 }

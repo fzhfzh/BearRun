@@ -32,9 +32,9 @@ private function Patrol() : Vector3
 {
 	var toTargetVector:Vector3 = nextWayPoint.transform.position - this.transform.position;
 	toTargetVector.y = 0;
-	
+
 	//if arrived, move to next waypoint
-	if(toTargetVector.sqrMagnitude < 1)
+	if(toTargetVector.sqrMagnitude < 0.1)
 	{
 		nextWayPoint = nextWayPoint.GetNextWayPoint();
 	}
@@ -52,6 +52,7 @@ function Update () {
 	
 	targetInRange = false;
 	targetInView = false;
+	//directionVector = this.Patrol();
 	
 	//is runner in range?
 	if(toTargetVector.sqrMagnitude <= (detectionRange * detectionRange)) //compare squared magnitude is faster
@@ -83,13 +84,16 @@ function Update () {
 		//if not at last seen location yet, move to last seen location
 		toTargetVector = lastSeenPosition - this.transform.position;
 		toTargetVector.y = 0;
-		if(toTargetVector.sqrMagnitude >= 1)
+		
+		if(toTargetVector.sqrMagnitude >= 0.1)
 		{
 			directionVector = toTargetVector.normalized;
 			currentState = "CHASING";
 		}
 		else
 		{
+			//changing last seen position to current position to prevent going back to previous position when wandering
+			lastSeenPosition = this.transform.position;
 			//else start looking around, or start wandering if looked around long enough
 			//count down timer
 			timeBeforeWandering -= Time.deltaTime;
@@ -98,6 +102,10 @@ function Update () {
 			if(timeBeforeWandering > 0)
 			{
 				currentState = "LOOKING AROUND";
+				//look around
+				var angleToTurn:float = timeBeforeWandering / Mathf.PI;
+				directionVector = new Vector3(Mathf.Sin(angleToTurn), 0, Mathf.Cos(angleToTurn));
+				directionVector = directionVector.normalized;
 			}
 			//else start wandering around again
 			else
@@ -107,7 +115,7 @@ function Update () {
 			}
 		}
 	}
-			
+		
 	//else move to last seen location
 	
 	//reached last seen location? start look around count down
@@ -117,7 +125,7 @@ function Update () {
 	
 	//change movement to current AI movement
 	
-	Debug.Log(directionVector);
+	
 	if (directionVector != Vector3.zero) {
 		// Get the length of the directon vector and then normalize it
 		// Dividing by the length is cheaper than normalizing when we already have the length anyway
@@ -135,6 +143,7 @@ function Update () {
 		directionVector = directionVector * directionLength;
 	}
 	
+	Debug.Log("To Vector = " + directionVector);
 	//move it
 	motor.inputMoveDirection = directionVector;
 }
