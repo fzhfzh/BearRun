@@ -143,7 +143,7 @@ function Update () {
 		directionVector = directionVector * directionLength;
 	}
 	
-	Debug.Log("To Vector = " + directionVector);
+	//Debug.Log("To Vector = " + directionVector);
 	//move it
 	motor.inputMoveDirection = directionVector;
 }
