@@ -34,7 +34,7 @@ private function Patrol() : Vector3
 	toTargetVector.y = 0;
 
 	//if arrived, move to next waypoint
-	if(toTargetVector.sqrMagnitude < 0.1)
+	if(toTargetVector.sqrMagnitude < 1)
 	{
 		nextWayPoint = nextWayPoint.GetNextWayPoint();
 	}
@@ -85,7 +85,7 @@ function Update () {
 		toTargetVector = lastSeenPosition - this.transform.position;
 		toTargetVector.y = 0;
 		
-		if(toTargetVector.sqrMagnitude >= 0.1)
+		if(toTargetVector.sqrMagnitude >= 1)
 		{
 			directionVector = toTargetVector.normalized;
 			currentState = "CHASING";
