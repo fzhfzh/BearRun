@@ -28,6 +28,11 @@ private function ChooseChests():void
 	
 }
 
+public function getChestLocations():Chest[]
+{
+	return chests;
+}
+
 function Start () {
 
 	//generate chest position and spawn chest
