@@ -59,7 +59,7 @@ private function determineState():void
 {
 	var blackBearPosition = target.transform.position;
 	//is black bear in sight?
-	var pointInViewport:Vector3 = runnerCamera.WorldToViewportPoint();
+	var pointInViewport:Vector3 = runnerCamera.WorldToViewportPoint(blackBearPosition);
 	if(pointInViewport.z > 0 && pointInViewport.x > 0 && pointInViewport.y > 0
 	&& pointInViewport.x < 1 && pointInViewport.y < 1)
 	{

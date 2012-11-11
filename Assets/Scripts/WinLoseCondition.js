@@ -9,6 +9,7 @@ public var chestCount:int = 4;
 private var chestsFound:int = 0;
 
 public var chests:Chest[];
+public var gotChest: AudioClip;
 
 //chooses a chest randomly from the pool available
 private function ChooseChests():void
@@ -35,6 +36,7 @@ public function getChestLocations():Chest[]
 
 function Start () {
 
+	Screen.showCursor = false;
 	//generate chest position and spawn chest
 	chestPosition = new Vector3(0, 0, 0);
 	
@@ -43,6 +45,17 @@ function Start () {
 }
 
 function Update () {
+
+	var chestsLeftToFind = chestCount - 1 - chestsFound;
+	
+	(GameObject.Find("PiecesLeftText").GetComponent(GUIText) as GUIText).text = "Pieces Left To Find: " + chestsLeftToFind;
+
+	//check if runner is almost winning
+	if(chestsFound == chestCount - 2)
+	{
+		chaser.GetComponent(ChaserAI).EmergencyTeleport();
+	}
+
 
 	//check if chaser has caught runner
 	var distanceVector:Vector3 = runner.transform.position - chaser.transform.position;
@@ -65,6 +78,7 @@ function Update () {
 			
 			if(distanceVector.sqrMagnitude <= 5)
 			{
+				AudioSource.PlayClipAtPoint(gotChest, runner.transform.position);
 				chestsFound++;		
 				//remove chest
 				chests[i].active = false;	

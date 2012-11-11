@@ -16,6 +16,58 @@ private var targetInView : boolean;
 
 private var currentState : String;
 
+private var destinationPoint: Vector3;
+
+public var allWayPoints : WayPoint[];
+
+public var staticAudio: AudioClip;
+
+public class pair implements System.IComparable
+{
+	public var distanceFromTarget:float;
+	public var wayPointIndex:int;
+	
+	public function pair(index:int, distance:float)
+	{
+		wayPointIndex = index;
+		distanceFromTarget = distance;
+	}
+	
+	function CompareTo(obj: Object) : int { 
+
+        var other :pair = obj; // Typecast to own class 
+
+        return distanceFromTarget.CompareTo(other.distanceFromTarget); 
+
+    }
+};
+
+public function EmergencyTeleport()
+{
+	//var wayPointSortArray : pair[] = new pair[allWayPoints.length];
+	
+	var wayPointSortArray:Array = new Array();
+	
+	for(var i:int = 0; i < allWayPoints.length; i++)
+	{
+		var distanceVector:Vector3 = allWayPoints[i].transform.position - target.transform.position;
+		var distance:float = distanceVector.sqrMagnitude;
+		
+		wayPointSortArray.Add(new pair(i, distance));
+		//wayPointSortArray[i] = new pair(i, distance);
+	}
+	
+	//sort array
+	wayPointSortArray.Sort();
+	
+	//target the closest waypoint
+	nextWayPoint = allWayPoints[(wayPointSortArray[0] as pair).wayPointIndex];
+	
+	//for(var i:int = 0; i < allWayPoints.length; i++)
+	//{
+	//}
+}
+
 // Use this for initialization
 function Awake () {
 	motor = GetComponent(CharacterMotor);
@@ -39,7 +91,7 @@ private function Patrol() : Vector3
 		nextWayPoint = nextWayPoint.GetNextWayPoint();
 	}
 	
-	return toTargetVector.normalized;
+	return nextWayPoint.transform.position;
 }
 
 function Update () {
@@ -58,6 +110,27 @@ function Update () {
 	if(toTargetVector.sqrMagnitude <= (detectionRange * detectionRange)) //compare squared magnitude is faster
 	{
 		targetInRange = true;
+		(GameObject.Find("Main Camera").GetComponent(NoiseEffect) as NoiseEffect).enabled = true;
+		AudioSource.PlayClipAtPoint(staticAudio, transform.position);
+	}
+	
+	var distanceToTarget:float = toTargetVector.sqrMagnitude;
+	
+	//fuzzy logic to determine movespeed
+	var veryFarIndex:float;
+	var farIndex:float;
+	var mediumIndex:float;
+	var shortIndex:float;
+	
+	if(distanceToTarget >= 800)
+	{
+		this.GetComponent(NavMeshAgent).speed = 10.0;
+		(GameObject.Find("Main Camera").GetComponent(NoiseEffect) as NoiseEffect).enabled = false;
+	}
+	else
+	{
+		
+		this.GetComponent(NavMeshAgent).speed = 3.5;
 	}
 	
 	//is runner in view?
@@ -78,6 +151,7 @@ function Update () {
 		timeBeforeWandering = 5.0f;
 		
 		//for now just a straight movement vector to target, with obstacles, A* will be used
+		destinationPoint = target.transform.position;
 	}	
 	else
 	{
@@ -88,6 +162,7 @@ function Update () {
 		if(toTargetVector.sqrMagnitude >= 1)
 		{
 			directionVector = toTargetVector.normalized;
+			destinationPoint = lastSeenPosition;
 			currentState = "CHASING";
 		}
 		else
@@ -106,12 +181,13 @@ function Update () {
 				var angleToTurn:float = timeBeforeWandering / Mathf.PI;
 				directionVector = new Vector3(Mathf.Sin(angleToTurn), 0, Mathf.Cos(angleToTurn));
 				directionVector = directionVector.normalized;
+				destinationPoint = this.transform.position;
 			}
 			//else start wandering around again
 			else
 			{
 				currentState = "WANDERING";
-				directionVector = this.Patrol();
+				destinationPoint = this.Patrol();
 			}
 		}
 	}
@@ -145,7 +221,9 @@ function Update () {
 	
 	//Debug.Log("To Vector = " + directionVector);
 	//move it
-	motor.inputMoveDirection = directionVector;
+	this.GetComponent(NavMeshAgent).destination = destinationPoint;
+	//motor.inputMoveDirection = directionVector;
+	
 }
 
 // Require a character controller to be attached to the same game object
