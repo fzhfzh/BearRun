@@ -1,4 +1,5 @@
 private var motor : CharacterMotor;
+public var isWalking:boolean = false;
 
 // Use this for initialization
 function Awake () {
@@ -14,6 +15,7 @@ function Update () {
 	var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 	
 	if (directionVector != Vector3.zero) {
+		isWalking = true;
 		// Get the length of the directon vector and then normalize it
 		// Dividing by the length is cheaper than normalizing when we already have the length anyway
 		var directionLength = directionVector.magnitude;
@@ -28,6 +30,10 @@ function Update () {
 		
 		// Multiply the normalized direction vector by the modified length
 		directionVector = directionVector * directionLength;
+	}
+	else
+	{
+		isWalking = false;
 	}
 	
 	// Apply the direction to the CharacterMotor

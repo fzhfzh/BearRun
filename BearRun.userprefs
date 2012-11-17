@@ -1,15 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\WinLoseCondition.js">
-    <Files>
-      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\CharacterMotor.js" Line="210" Column="3" />
-      <File FileName="Assets\Scripts\ChaserAI.js" Line="62" Column="75" />
-      <File FileName="Assets\Scripts\WinLoseCondition.js" Line="7" Column="30" />
-      <File FileName="Assets\Scripts\RunnerAI.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\StopRenderer.js" Line="13" Column="9" />
-      <File FileName="Assets\Scripts\Chest.js" Line="1" Column="1" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

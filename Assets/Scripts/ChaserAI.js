@@ -106,6 +106,8 @@ function Update () {
 	targetInView = false;
 	//directionVector = this.Patrol();
 	
+	detectionRange = 20.0 + 5.0 * GameObject.Find("GameLogic").GetComponent(WinLoseCondition).getChestsFound();
+	
 	//is runner in range?
 	if(toTargetVector.sqrMagnitude <= (detectionRange * detectionRange)) //compare squared magnitude is faster
 	{
@@ -122,15 +124,17 @@ function Update () {
 	var mediumIndex:float;
 	var shortIndex:float;
 	
-	if(distanceToTarget >= 800)
+	
+	
+	if(distanceToTarget >= 1600)
 	{
-		this.GetComponent(NavMeshAgent).speed = 10.0;
+		this.GetComponent(NavMeshAgent).speed = 10.0 + 10.0 * GameObject.Find("GameLogic").GetComponent(WinLoseCondition).getChestsFound();
 		(GameObject.Find("Main Camera").GetComponent(NoiseEffect) as NoiseEffect).enabled = false;
 	}
 	else
 	{
 		
-		this.GetComponent(NavMeshAgent).speed = 3.5;
+		this.GetComponent(NavMeshAgent).speed = 3.5 + 0.1 * GameObject.Find("GameLogic").GetComponent(WinLoseCondition).getChestsFound();
 	}
 	
 	//is runner in view?

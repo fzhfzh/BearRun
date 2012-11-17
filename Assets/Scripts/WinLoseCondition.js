@@ -34,6 +34,11 @@ public function getChestLocations():Chest[]
 	return chests;
 }
 
+public function getChestsFound():int
+{
+	return chestsFound;
+}
+
 function Start () {
 
 	Screen.showCursor = false;
@@ -61,7 +66,7 @@ function Update () {
 	var distanceVector:Vector3 = runner.transform.position - chaser.transform.position;
 	distanceVector.y = 0;
 	
-	Debug.Log(distanceVector.sqrMagnitude);
+//	Debug.Log(distanceVector.sqrMagnitude);
 	if(distanceVector.sqrMagnitude <= 1)
 	{
 		Application.LoadLevel(3);
